@@ -15,7 +15,6 @@ gulp.task('build', function() {
 });
 
 gulp.task('build-min', function() {
-    console.log('[ID] ks');
     return gulp.src(sources)
         .pipe(concat('ks.min.js'))
         .pipe(uglify())

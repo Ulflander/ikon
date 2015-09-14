@@ -184,17 +184,17 @@ var monster = {
         $ = d.querySelector.bind(d),
         Base = function() {};
 
-    function fn(func) {
+    function ks(func) {
         if (!!ready) {
             func();
         } else if (typeof func === 'function') {
             readyCbs.push(func);
         }
 
-        return fn;
+        return ks;
     };
 
-    fn.ajax = function(method, url, data, headers, cb, contentType) {
+    ks.ajax = function(method, url, data, headers, cb, contentType) {
 
         var xhr = new XMLHttpRequest(),
             hasBody = (method === 'PUT' || method === 'POST'),
@@ -241,10 +241,10 @@ var monster = {
             xhr.send();
         }
 
-        return fn;
+        return ks;
     };
 
-    fn.solve = function(url, object) {
+    ks.solve = function(url, object) {
         var a = url.split('/'),
             i, l = a.length, key;
 
@@ -263,7 +263,7 @@ var monster = {
         return a.join('/');
     };
 
-    fn.bulk = function(urls, cb) {
+    ks.bulk = function(urls, cb) {
         var k,
             l = 0,
             url,
@@ -279,7 +279,7 @@ var monster = {
             // (either a unique one or an array of them)
             if (Array.isArray(url)) {
                 (function bulk_load(k){
-                    fn.load(url[0], url[1], function(err, data) {
+                    ks.load(url[0], url[1], function(err, data) {
                         hasError = !!err || hasError;
                         res[k] = data;
                         l -= 1;
@@ -292,7 +292,7 @@ var monster = {
             // the URL if it's a string
             } else if (typeof url === 'string') {
                 (function bulk_get(k){
-                    fn.get(url, function(err, data) {
+                    ks.get(url, function(err, data) {
                         hasError = !!err || hasError;
                         res[k] = data;
                         l -= 1;
@@ -309,55 +309,55 @@ var monster = {
             cb(null, res);
         }
 
-        return fn;
+        return ks;
     };
 
-    fn.get = function(url, cb) {
-        return fn.ajax('GET', url, null, {}, function(err, data) {
+    ks.get = function(url, cb) {
+        return ks.ajax('GET', url, null, {}, function(err, data) {
             cb(err, data);
         });
     };
 
-    fn.post = function(url, data, cb, parseJSON) {
+    ks.post = function(url, data, cb, parseJSON) {
         var cb2 = cb;
         if (parseJSON) {
             cb2 = function(err, data) {
                 cb(err, typeof data === 'string' ? JSON.parse(data) : data);
             };
         }
-        return fn.ajax('POST', url, data, {}, cb2);
+        return ks.ajax('POST', url, data, {}, cb2);
     };
 
-    fn.put = function(url, data, cb, parseJSON) {
+    ks.put = function(url, data, cb, parseJSON) {
         var cb2 = cb;
         if (parseJSON) {
             cb2 = function(err, data) {
                 cb(err, typeof data === 'string' ? JSON.parse(data) : data);
             };
         }
-        return fn.ajax('PUT', url, data, {}, cb2);
+        return ks.ajax('PUT', url, data, {}, cb2);
     };
 
-    fn.delete = function(url, cb) {
-        return fn.ajax('DELETE', url, null, {}, cb);
+    ks.delete = function(url, cb) {
+        return ks.ajax('DELETE', url, null, {}, cb);
     };
 
-    fn.load = function(url, modelName, cb) {
-        return fn.get(url, function(err, data) {
+    ks.load = function(url, modelName, cb) {
+        return ks.get(url, function(err, data) {
             if (!!err) {
                 cb(err, null);
                 return;
             }
 
-            cb(null, fn.materialize(modelName, JSON.parse(data)));
+            cb(null, ks.materialize(modelName, JSON.parse(data)));
         });
     };
 
-    fn.materialize = function(modelName, data) {
+    ks.materialize = function(modelName, data) {
         var i, l, res;
         if (Array.isArray(data)) {
             for (i = 0, l = data.length; i < l; i += 1) {
-                data[i] = fn.materialize(modelName, data[i]);
+                data[i] = ks.materialize(modelName, data[i]);
             }
             return data;
         }
@@ -376,7 +376,7 @@ var monster = {
         return res;
     };
 
-    fn.model = function(modelName, constructor, prototype) {
+    ks.model = function(modelName, constructor, prototype) {
         for (var k in prototype) {
             if (prototype.hasOwnProperty(k)) {
                 constructor.prototype[k] = prototype[k];
@@ -384,15 +384,15 @@ var monster = {
         }
         store[modelName] = {};
         models[modelName] = constructor;
-        return fn;
+        return ks;
     };
 
-    fn.template = function(template, cb) {
+    ks.template = function(template, cb) {
         if (templates.hasOwnProperty(template)) {
             cb(templates[template]);
-            return fn;
+            return ks;
         }
-        fn.get(template + '.html', function(err, tpl) {
+        ks.get(template + '.html', function(err, tpl) {
             if (!!err) {
                 console.warn('Template not loaded: ' + template, err);
                 tpl = '';
@@ -401,10 +401,10 @@ var monster = {
             }
             cb(tpl);
         });
-        return fn;
+        return ks;
     };
 
-    fn.view = function(selector, template, cb) {
+    ks.view = function(selector, template, cb) {
         var el = $(selector),
             view;
         if (el === null) {
@@ -413,7 +413,7 @@ var monster = {
         }
         el.innerHTML = '';
         ko.cleanNode(el);
-        fn.template(template, function(tpl) {
+        ks.template(template, function(tpl) {
             cb(function(vm) {
                 el.innerHTML = tpl;
                 if (!!vm && typeof ko !== 'undefined') {
@@ -421,30 +421,30 @@ var monster = {
                 }
             });
         });
-        return fn;
+        return ks;
     };
 
-    fn.route = function (hash, cb) {
-        router.add(fn.cleanHash(hash), cb);
-        return fn;
+    ks.route = function (hash, cb) {
+        router.add(ks.cleanHash(hash), cb);
+        return ks;
     };
 
-    fn.redirect = function (hash) {
+    ks.redirect = function (hash) {
         if (hash.indexOf('#') !== 0) {
             hash = '#' + hash;
         }
         w.location.hash = hash;
-        return fn;
+        return ks;
     };
 
-    fn.cleanHash = function(hash) {
+    ks.cleanHash = function(hash) {
         while (hash[0] === '#' || hash[0] === '!' || hash[0] === '/') {
             hash = hash.slice(1);
         }
         return hash;
     };
 
-    fn.extend = function(from, to) {
+    ks.extend = function(from, to) {
         var k;
         to = to || {};
         for (k in from) {
@@ -455,32 +455,32 @@ var monster = {
         return to;
     };
 
-    fn.hasClass = function(node, className) {
+    ks.hasClass = function(node, className) {
         return node.className && new RegExp("(\\s|^)" + className + "(\\s|$)").test(node.className);
     };
 
-    fn.addClass = function(node, className) {
-        if (className && !fn.hasClass(node, className)) {
+    ks.addClass = function(node, className) {
+        if (className && !ks.hasClass(node, className)) {
             node.className += ' ' + className;
         }
-        return fn;
+        return ks;
     };
 
-    fn.removeClass = function(node, className) {
-        if (className && fn.hasClass(node, className)) {
+    ks.removeClass = function(node, className) {
+        if (className && ks.hasClass(node, className)) {
             node.className = node.className.replace(new RegExp('(^| )(' + className +')($| )', 'gi'), ' ');
         }
-        return fn;
+        return ks;
     };
 
-    fn.Element = function(el, parent) {
+    ks.Element = function(el, parent) {
         this.el_ = el;
         this.parent_ = parent || null;
     };
 
-    fn.Element.prototype = {
+    ks.Element.prototype = {
         create: function(type) {
-            var child = new fn.Element(d.createElement(type), this);
+            var child = new ks.Element(d.createElement(type), this);
             child.appendTo(this);
             return child;
         },
@@ -509,15 +509,15 @@ var monster = {
             return this.el_.style[key];
         },
         addClass: function(className) {
-            fn.addClass.call(fn, this.el_, className);
+            ks.addClass.call(ks, this.el_, className);
             return this;
         },
         removeClass: function(className) {
-            fn.addClass.call(fn, this.el_, className);
+            ks.addClass.call(ks, this.el_, className);
             return this;
         },
         hasClass: function() {
-            return fn.hasClass.call(fn, this.el_, className);;
+            return ks.hasClass.call(ks, this.el_, className);;
         },
         text: function(text) {
             this.el_.innerText = text;
@@ -553,7 +553,7 @@ var monster = {
         },
         appendTo: function(parent) {
             var p = parent;
-            if (p instanceof fn.Element) {
+            if (p instanceof ks.Element) {
                 p = p.el();
             }
             p.appendChild(this.el_);
@@ -564,15 +564,20 @@ var monster = {
         }
     };
 
-    fn.select = function(selector) {
-        return new fn.Element($(selector));
+    ks.select = function(selector) {
+        return new ks.Element($(selector));
     };
 
-    fn.create = function(type) {
-        return new fn.Element(d.createElement(type));
+    ks.create = function(type) {
+        return new ks.Element(d.createElement(type));
     };
 
-    fn.cookie = {
+    ks.fn = function(name, handler) {
+        // To be replaced by prototype based
+        ks.fn[name] = handler;
+    };
+
+    ks.cookie = {
         get: function() {
             return monster.get.apply(w, arguments);
         },
@@ -585,7 +590,7 @@ var monster = {
     };
 
     var route = function() {
-        router.run(fn.cleanHash(w.location.hash || ''));
+        router.run(ks.cleanHash(w.location.hash || ''));
     };
 
     w.addEventListener('hashchange', route);
@@ -597,6 +602,6 @@ var monster = {
         route();
     });
 
-    w.fn = fn;
+    w.ks = ks;
 
 }());
