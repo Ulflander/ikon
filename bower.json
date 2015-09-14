@@ -1,0 +1,19 @@
+{
+  "name": "fn",
+  "version": "0.0.0",
+  "authors": [
+    "Ulflander <xlaumonier@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "rlite": "~1.0.91",
+    "cookie-monster": "~0.3.0"
+  }
+}
