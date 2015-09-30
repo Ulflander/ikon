@@ -5,18 +5,18 @@ var gulp = require('gulp'),
 var sources = [
             'bower_components/rlite/rlite.js',
             'bower_components/cookie-monster/dist/cookie-monster.js',
-            'src/ks.js'
+            'src/ikon.js'
         ];
 
 gulp.task('build', function() {
     return gulp.src(sources)
-        .pipe(concat('ks.js'))
+        .pipe(concat('ikon.js'))
         .pipe(gulp.dest('dist/'))
 });
 
 gulp.task('build-min', function() {
     return gulp.src(sources)
-        .pipe(concat('ks.min.js'))
+        .pipe(concat('ikon.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('dist/'))
 });

@@ -11,17 +11,17 @@
         $ = d.querySelector.bind(d),
         Base = function() {};
 
-    function ks(func) {
+    function ikon(func) {
         if (!!ready) {
             func();
         } else if (typeof func === 'function') {
             readyCbs.push(func);
         }
 
-        return ks;
+        return ikon;
     };
 
-    ks.ajax = function(method, url, data, headers, cb, contentType) {
+    ikon.ajax = function(method, url, data, headers, cb, contentType) {
 
         var xhr = new XMLHttpRequest(),
             hasBody = (method === 'PUT' || method === 'POST'),
@@ -68,10 +68,10 @@
             xhr.send();
         }
 
-        return ks;
+        return ikon;
     };
 
-    ks.solve = function(url, object) {
+    ikon.solve = function(url, object) {
         var a = url.split('/'),
             i, l = a.length, key;
 
@@ -90,7 +90,7 @@
         return a.join('/');
     };
 
-    ks.bulk = function(urls, cb) {
+    ikon.bulk = function(urls, cb) {
         var k,
             l = 0,
             url,
@@ -106,7 +106,7 @@
             // (either a unique one or an array of them)
             if (Array.isArray(url)) {
                 (function bulk_load(k){
-                    ks.load(url[0], url[1], function(err, data) {
+                    ikon.load(url[0], url[1], function(err, data) {
                         hasError = !!err || hasError;
                         res[k] = data;
                         l -= 1;
@@ -119,7 +119,7 @@
             // the URL if it's a string
             } else if (typeof url === 'string') {
                 (function bulk_get(k){
-                    ks.get(url, function(err, data) {
+                    ikon.get(url, function(err, data) {
                         hasError = !!err || hasError;
                         res[k] = data;
                         l -= 1;
@@ -136,55 +136,55 @@
             cb(null, res);
         }
 
-        return ks;
+        return ikon;
     };
 
-    ks.get = function(url, cb) {
-        return ks.ajax('GET', url, null, {}, function(err, data) {
+    ikon.get = function(url, cb) {
+        return ikon.ajax('GET', url, null, {}, function(err, data) {
             cb(err, data);
         });
     };
 
-    ks.post = function(url, data, cb, parseJSON) {
+    ikon.post = function(url, data, cb, parseJSON) {
         var cb2 = cb;
         if (parseJSON) {
             cb2 = function(err, data) {
                 cb(err, typeof data === 'string' ? JSON.parse(data) : data);
             };
         }
-        return ks.ajax('POST', url, data, {}, cb2);
+        return ikon.ajax('POST', url, data, {}, cb2);
     };
 
-    ks.put = function(url, data, cb, parseJSON) {
+    ikon.put = function(url, data, cb, parseJSON) {
         var cb2 = cb;
         if (parseJSON) {
             cb2 = function(err, data) {
                 cb(err, typeof data === 'string' ? JSON.parse(data) : data);
             };
         }
-        return ks.ajax('PUT', url, data, {}, cb2);
+        return ikon.ajax('PUT', url, data, {}, cb2);
     };
 
-    ks.delete = function(url, cb) {
-        return ks.ajax('DELETE', url, null, {}, cb);
+    ikon.delete = function(url, cb) {
+        return ikon.ajax('DELETE', url, null, {}, cb);
     };
 
-    ks.load = function(url, modelName, cb) {
-        return ks.get(url, function(err, data) {
+    ikon.load = function(url, modelName, cb) {
+        return ikon.get(url, function(err, data) {
             if (!!err) {
                 cb(err, null);
                 return;
             }
 
-            cb(null, ks.materialize(modelName, JSON.parse(data)));
+            cb(null, ikon.materialize(modelName, JSON.parse(data)));
         });
     };
 
-    ks.materialize = function(modelName, data) {
+    ikon.materialize = function(modelName, data) {
         var i, l, res;
         if (Array.isArray(data)) {
             for (i = 0, l = data.length; i < l; i += 1) {
-                data[i] = ks.materialize(modelName, data[i]);
+                data[i] = ikon.materialize(modelName, data[i]);
             }
             return data;
         }
@@ -203,7 +203,7 @@
         return res;
     };
 
-    ks.model = function(modelName, constructor, prototype) {
+    ikon.model = function(modelName, constructor, prototype) {
         for (var k in prototype) {
             if (prototype.hasOwnProperty(k)) {
                 constructor.prototype[k] = prototype[k];
@@ -211,15 +211,15 @@
         }
         store[modelName] = {};
         models[modelName] = constructor;
-        return ks;
+        return ikon;
     };
 
-    ks.template = function(template, cb) {
+    ikon.template = function(template, cb) {
         if (templates.hasOwnProperty(template)) {
             cb(templates[template]);
-            return ks;
+            return ikon;
         }
-        ks.get(template + '.html', function(err, tpl) {
+        ikon.get(template + '.html', function(err, tpl) {
             if (!!err) {
                 console.warn('Template not loaded: ' + template, err);
                 tpl = '';
@@ -228,10 +228,10 @@
             }
             cb(tpl);
         });
-        return ks;
+        return ikon;
     };
 
-    ks.view = function(selector, template, cb) {
+    ikon.view = function(selector, template, cb) {
         var el = $(selector),
             view;
         if (el === null) {
@@ -240,7 +240,7 @@
         }
         el.innerHTML = '';
         ko.cleanNode(el);
-        ks.template(template, function(tpl) {
+        ikon.template(template, function(tpl) {
             cb(function(vm) {
                 el.innerHTML = tpl;
                 if (!!vm && typeof ko !== 'undefined') {
@@ -248,30 +248,30 @@
                 }
             });
         });
-        return ks;
+        return ikon;
     };
 
-    ks.route = function (hash, cb) {
-        router.add(ks.cleanHash(hash), cb);
-        return ks;
+    ikon.route = function (hash, cb) {
+        router.add(ikon.cleanHash(hash), cb);
+        return ikon;
     };
 
-    ks.redirect = function (hash) {
+    ikon.redirect = function (hash) {
         if (hash.indexOf('#') !== 0) {
             hash = '#' + hash;
         }
         w.location.hash = hash;
-        return ks;
+        return ikon;
     };
 
-    ks.cleanHash = function(hash) {
+    ikon.cleanHash = function(hash) {
         while (hash[0] === '#' || hash[0] === '!' || hash[0] === '/') {
             hash = hash.slice(1);
         }
         return hash;
     };
 
-    ks.extend = function(from, to) {
+    ikon.extend = function(from, to) {
         var k;
         to = to || {};
         for (k in from) {
@@ -282,32 +282,32 @@
         return to;
     };
 
-    ks.hasClass = function(node, className) {
+    ikon.hasClass = function(node, className) {
         return node.className && new RegExp("(\\s|^)" + className + "(\\s|$)").test(node.className);
     };
 
-    ks.addClass = function(node, className) {
-        if (className && !ks.hasClass(node, className)) {
+    ikon.addClass = function(node, className) {
+        if (className && !ikon.hasClass(node, className)) {
             node.className += ' ' + className;
         }
-        return ks;
+        return ikon;
     };
 
-    ks.removeClass = function(node, className) {
-        if (className && ks.hasClass(node, className)) {
+    ikon.removeClass = function(node, className) {
+        if (className && ikon.hasClass(node, className)) {
             node.className = node.className.replace(new RegExp('(^| )(' + className +')($| )', 'gi'), ' ');
         }
-        return ks;
+        return ikon;
     };
 
-    ks.Element = function(el, parent) {
+    ikon.Element = function(el, parent) {
         this.el_ = el;
         this.parent_ = parent || null;
     };
 
-    ks.Element.prototype = {
+    ikon.Element.prototype = {
         create: function(type) {
-            var child = new ks.Element(d.createElement(type), this);
+            var child = new ikon.Element(d.createElement(type), this);
             child.appendTo(this);
             return child;
         },
@@ -336,15 +336,15 @@
             return this.el_.style[key];
         },
         addClass: function(className) {
-            ks.addClass.call(ks, this.el_, className);
+            ikon.addClass.call(ikon, this.el_, className);
             return this;
         },
         removeClass: function(className) {
-            ks.addClass.call(ks, this.el_, className);
+            ikon.addClass.call(ikon, this.el_, className);
             return this;
         },
         hasClass: function() {
-            return ks.hasClass.call(ks, this.el_, className);;
+            return ikon.hasClass.call(ikon, this.el_, className);;
         },
         text: function(text) {
             this.el_.innerText = text;
@@ -380,7 +380,7 @@
         },
         appendTo: function(parent) {
             var p = parent;
-            if (p instanceof ks.Element) {
+            if (p instanceof ikon.Element) {
                 p = p.el();
             }
             p.appendChild(this.el_);
@@ -391,20 +391,20 @@
         }
     };
 
-    ks.select = function(selector) {
-        return new ks.Element($(selector));
+    ikon.select = function(selector) {
+        return new ikon.Element($(selector));
     };
 
-    ks.create = function(type) {
-        return new ks.Element(d.createElement(type));
+    ikon.create = function(type) {
+        return new ikon.Element(d.createElement(type));
     };
 
-    ks.fn = function(name, handler) {
+    ikon.fn = function(name, handler) {
         // To be replaced by prototype based
-        ks.fn[name] = handler;
+        ikon.fn[name] = handler;
     };
 
-    ks.cookie = {
+    ikon.cookie = {
         get: function() {
             return monster.get.apply(w, arguments);
         },
@@ -417,7 +417,7 @@
     };
 
     var route = function() {
-        router.run(ks.cleanHash(w.location.hash || ''));
+        router.run(ikon.cleanHash(w.location.hash || ''));
     };
 
     w.addEventListener('hashchange', route);
@@ -429,6 +429,6 @@
         route();
     });
 
-    w.ks = ks;
+    w.ikon = ikon;
 
 }());

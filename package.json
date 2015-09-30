@@ -1,5 +1,5 @@
 {
-  "name": "ks",
+  "name": "ikon",
   "version": "1.0.0",
   "description": "",
   "main": "gulpfile.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Ulflander/ks"
+    "url": "https://github.com/Ulflander/ikon"
   },
   "author": "ulflander <xlaumonier@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Ulflander/ks/issues"
+    "url": "https://github.com/Ulflander/ikon/issues"
   },
-  "homepage": "https://github.com/Ulflander/ks",
+  "homepage": "https://github.com/Ulflander/ikon",
   "devDependencies": {
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
