@@ -519,7 +519,7 @@ var monster = {
             return this;
         },
         removeClass: function(className) {
-            ikon.addClass.call(ikon, this.el_, className);
+            ikon.removeClass.call(ikon, this.el_, className);
             return this;
         },
         hasClass: function(className) {
