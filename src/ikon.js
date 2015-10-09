@@ -11,11 +11,17 @@
         $ = d.querySelector.bind(d),
         Base = function() {};
 
-    function ikon(func) {
-        if (!!ready) {
-            func();
-        } else if (typeof func === 'function') {
-            readyCbs.push(func);
+    function ikon(e) {
+        if (typeof e === 'string') {
+            return ikon.select(e);
+        } else if (typeof e === 'function') {
+            if (!!ready) {
+                func();
+            } else if (typeof func === 'function') {
+                readyCbs.push(func);
+            }
+        } else if (e instanceof w.Element) {
+            return new ikon.Element(e);
         }
 
         return ikon;
@@ -343,8 +349,8 @@
             ikon.addClass.call(ikon, this.el_, className);
             return this;
         },
-        hasClass: function() {
-            return ikon.hasClass.call(ikon, this.el_, className);;
+        hasClass: function(className) {
+            return ikon.hasClass.call(ikon, this.el_, className);
         },
         text: function(text) {
             this.el_.innerText = text;
@@ -372,11 +378,33 @@
             this.el_.removeEventListener(evt, cb);
             return this;
         },
-        height: function() {
+        height: function(v) {
+            if (arguments.length) {
+                this.style('height', v + 'px');
+                return this;
+            }
             return this.el_.offsetHeight;
         },
-        width: function() {
+        width: function(v) {
+            if (arguments.length) {
+                this.style('width', v + 'px');
+                return this;
+            }
             return this.el_.offsetWidth;
+        },
+        left: function(v) {
+            if (arguments.length) {
+                this.style('left', v + 'px');
+                return this;
+            }
+            return this.el_.offsetLeft;
+        },
+        top: function(v) {
+            if (arguments.length) {
+                this.style('top', v + 'px');
+                return this;
+            }
+            return this.el_.offsetTop;
         },
         appendTo: function(parent) {
             var p = parent;
