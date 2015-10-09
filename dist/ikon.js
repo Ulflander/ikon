@@ -193,7 +193,7 @@ var monster = {
             } else if (typeof func === 'function') {
                 readyCbs.push(func);
             }
-        } else if (e instanceof w.Element) {
+        } else if (e instanceof w.Element || e instanceof w.Window) {
             return new ikon.Element(e);
         }
 
